@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>TO BE NUMBER ONE GAME</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<style>
+body{
+    font-family:'Kanit',sans-serif;
+    background:#e60000;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+#box{
+    background:#111;
+    padding:30px;
+    border-radius:20px;
+    width:90%;
+    max-width:520px;
+    text-align:center;
+    border:3px solid #fff;
+}
+h1{color:#ffcc00}
+.btn{
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    background:#fff;
+    color:#e60000;
+}
+.btn:hover{background:#ffcc00;color:#000}
+input{
+    width:100%;
+    padding:12px;
+    font-size:18px;
+    border-radius:10px;
+    border:none;
+    margin-top:10px;
+}
+.loading{
+    font-size:22px;
+    animation:blink 1.5s infinite;
+}
+@keyframes blink{
+    0%,100%{opacity:1}
+    50%{opacity:0.4}
+}
+.certificate{
+    border:4px dashed #ffcc00;
+    padding:30px;
+    margin-top:20px;
+    background:#000;
+    min-height:420px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+</style>
+</head>
+<body>
+
+<div id="box"></div>
+
+<script>
+let firstName="", lastName="";
+let qIndex=0, correct=0, wrong=0;
+
+const questions = [
+{
+ q:"โครงการ TO BE NUMBER ONE ก่อตั้งในปีใด?",
+ options:["พ.ศ.2540","พ.ศ.2545","พ.ศ.2550","พ.ศ.2538"],
+ answer:1
+},
+{
+ q:"ใครคือองค์ประธานโครงการ TO BE NUMBER ONE?",
+ options:[
+  "สมเด็จพระเทพฯ",
+  "ทูลกระหม่อมหญิงอุบลรัตนราชกัญญาฯ",
+  "สมเด็จพระราชินี",
+  "เจ้าฟ้าสิริวัณณวรีฯ"
+ ],
+ answer:1
+},
+{
+ q:"สีประจำโครงการ TO BE NUMBER ONE คือสีใด?",
+ options:["แดง-ขาว","ฟ้า-เหลือง","ม่วง-ชมพู","เขียว-ขาว"],
+ answer:2
+},
+{
+ q:"คำขวัญหลักของโครงการคือข้อใด?",
+ options:[
+  "ร่วมใจต้านยาเสพติด",
+  "เป็นหนึ่งโดยไม่พึ่งยาเสพติด",
+  "เด็กไทยยุคใหม่",
+  "สร้างอนาคตไทย"
+ ],
+ answer:1
+},
+{
+ q:"กลุ่มเป้าหมายหลักของโครงการคือใคร?",
+ options:["ผู้สูงอายุ","เด็กและเยาวชน","ข้าราชการ","แรงงาน"],
+ answer:1
+},
+{
+ q:"ช่วงอายุเป้าหมายของโครงการคือช่วงใด?",
+ options:["3–12 ปี","6–24 ปี","18–30 ปี","ทุกช่วงอายุ"],
+ answer:1
+},
+{
+ q:"กิจกรรมเด่นของโครงการคือข้อใด?",
+ options:["แข่งขันกีฬา","TO BE NO.1 DANCERCISE","ตอบปัญหา","อบรมคุณธรรม"],
+ answer:1
+},
+{
+ q:"ศูนย์เพื่อนใจ TO BE NUMBER ONE มีไว้เพื่ออะไร?",
+ options:["จำหน่ายสินค้า","ให้คำปรึกษา","ลงโทษ","จัดสอบ"],
+ answer:1
+},
+{
+ q:"แนวคิดสำคัญของโครงการคือข้อใด?",
+ options:[
+  "แข่งขันเอาชนะ",
+  "หลีกเลี่ยงสังคม",
+  "พัฒนาตนเองให้เป็นหนึ่ง",
+  "ใช้กฎหมาย"
+ ],
+ answer:2
+},
+{
+ q:"หากเพื่อนชวนยุ่งเกี่ยวกับยาเสพติด ควรทำอย่างไร?",
+ options:[
+  "ลองตามเพื่อน",
+  "ปฏิเสธและชวนทำกิจกรรมดี ๆ",
+  "ไม่สนใจ",
+  "แจ้งเพื่อนคนอื่น"
+ ],
+ answer:1
+}
+];
+
+// ---------- Login ----------
+function showLogin(){
+ document.getElementById("box").innerHTML=`
+ <h1>🔐 เข้าสู่ระบบ</h1>
+ <p>กรุณากรอกชื่อจริงและนามสกุล</p>
+ <input id="fname" placeholder="ชื่อจริง">
+ <input id="lname" placeholder="นามสกุล">
+ <button class="btn" onclick="startGame()">เริ่มทำแบบทดสอบ</button>
+ `;
+}
+
+// ---------- Start ----------
+function startGame(){
+ const fn=document.getElementById("fname").value.trim();
+ const ln=document.getElementById("lname").value.trim();
+ if(!fn||!ln){alert("กรุณากรอกชื่อให้ครบ");return;}
+ firstName=fn; lastName=ln;
+ qIndex=0; correct=0; wrong=0;
+ nextQuestion();
+}
+
+// ---------- Question ----------
+function nextQuestion(){
+ if(qIndex>=questions.length){showResult();return;}
+ const q=questions[qIndex];
+ let html=`<h1>คำถามที่ ${qIndex+1}</h1><p>${q.q}</p>`;
+ q.options.forEach((o,i)=>{
+  html+=`<button class="btn" onclick="answer(${i})">${o}</button>`;
+ });
+ document.getElementById("box").innerHTML=html;
+}
+
+function answer(i){
+ if(i===questions[qIndex].answer){
+  correct++;
+  confetti({particleCount:100,spread:70});
+ }else{
+  wrong++;
+ }
+ qIndex++;
+ nextQuestion();
+}
+
+// ---------- Result ----------
+function showResult(){
+ document.getElementById("box").innerHTML=`
+ <h1>📊 สรุปผลคะแนน</h1>
+ <p><b>${firstName} ${lastName}</b></p>
+ <p>ตอบถูก: ${correct} ข้อ</p>
+ <p>ตอบผิด: ${wrong} ข้อ</p>
+ <button class="btn" onclick="loading()">ถัดไป</button>
+ `;
+}
+
+// ---------- Loading ----------
+function loading(){
+ document.getElementById("box").innerHTML=`
+ <h1 class="loading">⏳ กรุณารอสักครู่</h1>
+ `;
+ setTimeout(showCertificate,2000);
+}
+
+// ---------- Certificate ----------
+function showCertificate(){
+ const percent=(correct/questions.length)*100;
+ let level="พอใช้";
+ if(percent>=80) level="ดีเยี่ยม";
+ else if(percent>=50) level="ดีมาก";
+
+ document.getElementById("box").innerHTML=`
+ <h1>📜 ใบประกาศ</h1>
+ <div class="certificate">
+   <p>ขอมอบใบประกาศนี้ให้แก่</p>
+   <h2>${firstName} ${lastName}</h2>
+   <p>ผ่านการทดสอบโครงการ TO BE NUMBER ONE</p>
+   <p>มีความรู้ความสามารถอยู่ในระดับ</p>
+   <h2 style="color:#ffcc00">${level}</h2>
+ </div>
+ <button class="btn" onclick="showLogin()">ทำแบบทดสอบใหม่</button>
+ `;
+}
+
+// start
+showLogin();
+</script>
+
+</body>
+</html>
